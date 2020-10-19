@@ -68,6 +68,40 @@ def get_single_entry(id):
         return json.dumps(entry.__dict__)
 
 
+def get_entry_by_word(word):
+    with sqlite3.connect("./dailyjournal.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Use a ? parameter to inject a variable's value
+        # into the SQL statement.
+        db_cursor.execute("""
+         SELECT
+            e.id,
+            e.concept,
+            e.entry,
+            e.date,
+            e.mood_id
+        FROM entries e
+        WHERE e.entry LIKE ?
+        """, ( '%' + word + '%', ))
+
+        entries = []
+        # Load the single result into memory
+        dataset = db_cursor.fetchall()
+
+        # Create an animal instance from the current row
+        for row in dataset:
+
+            entry = Entry(row['id'], row['concept'], row['entry'],
+                            row['date'], row['mood_id'])
+
+            entries.append(entry.__dict__)
+
+    # Use `json` package to properly serialize list as JSON
+    return json.dumps(entries)
+
+
 def delete_entry(id):
     with sqlite3.connect("./dailyjournal.db") as conn:
         db_cursor = conn.cursor()
