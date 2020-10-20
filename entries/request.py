@@ -18,7 +18,7 @@ def get_all_entries():
             e.concept,
             e.entry,
             e.date,
-            e.mood_id
+            e.moodId
         FROM entries e
         """)
 
@@ -32,7 +32,7 @@ def get_all_entries():
         for row in dataset:
 
             entry = Entry(row['id'], row['concept'], row['entry'],
-                            row['date'], row['mood_id'])
+                            row['date'], row['moodId'])
 
             entries.append(entry.__dict__)
 
@@ -53,7 +53,7 @@ def get_single_entry(id):
             e.concept,
             e.entry,
             e.date,
-            e.mood_id
+            e.moodId
         FROM entries e
         WHERE e.id = ?
         """, ( id, ))
@@ -63,7 +63,7 @@ def get_single_entry(id):
 
         # Create an animal instance from the current row
         entry = Entry(data['id'], data['concept'], data['entry'],
-                            data['date'], data['mood_id'])
+                            data['date'], data['moodId'])
 
         return json.dumps(entry.__dict__)
 
@@ -81,7 +81,7 @@ def get_entry_by_word(word):
             e.concept,
             e.entry,
             e.date,
-            e.mood_id
+            e.moodId
         FROM entries e
         WHERE e.entry LIKE ?
         """, ( '%' + word + '%', ))
@@ -94,7 +94,7 @@ def get_entry_by_word(word):
         for row in dataset:
 
             entry = Entry(row['id'], row['concept'], row['entry'],
-                            row['date'], row['mood_id'])
+                            row['date'], row['moodId'])
 
             entries.append(entry.__dict__)
 
