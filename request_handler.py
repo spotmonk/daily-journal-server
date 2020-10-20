@@ -52,7 +52,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             # email as a filtering value?
             if key == "q" and resource == "entries":
                 if value == None:
-                    response = f"{get_all_entries()}"
+                    response = get_all_entries()
                 else:
                     response = get_entry_by_word(value)
         
