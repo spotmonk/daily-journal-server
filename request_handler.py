@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from entries import get_all_entries, get_single_entry, delete_entry, get_entry_by_word
+from moods import get_all_moods, get_single_mood
 
 
 # Here's a class. It inherits from another class.
@@ -34,9 +35,14 @@ class HandleRequests(BaseHTTPRequestHandler):
             if resource == "entries":
                 if id is not None:
                     response = f"{get_single_entry(id)}"
-
                 else:
                     response = f"{get_all_entries()}"
+            if resource == "moods":
+                if id is not None:
+                    response = f"{get_single_mood(id)}"
+
+                else:
+                    response = f"{get_all_moods()}"
 
         elif len(parsed) == 3:
             ( resource, key, value ) = parsed
@@ -45,7 +51,10 @@ class HandleRequests(BaseHTTPRequestHandler):
             # query parameter that specified the customer
             # email as a filtering value?
             if key == "q" and resource == "entries":
-                response = get_entry_by_word(value)
+                if value == None:
+                    response = f"{get_all_entries()}"
+                else:
+                    response = get_entry_by_word(value)
         
         self.wfile.write(response.encode())
 
