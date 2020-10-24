@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from entries import get_all_entries, get_single_entry, delete_entry, get_entry_by_word
+from entries import get_all_entries, get_single_entry, delete_entry, get_entry_by_word, create_entry
 from moods import get_all_moods, get_single_mood
+import json
 
 
 # Here's a class. It inherits from another class.
@@ -18,7 +19,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
-        self.send_header('Access-Control-Allow-Headers', 'X-Requested-With')
+        self.send_header('Access-Control-Allow-Headers', 'X-Requested-With, content-type')
         self.end_headers()
 
     # Here's a method on the class that overrides the parent's method.
@@ -66,7 +67,8 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
-        response = f"received post request:<br>{post_body}"
+        post_body = json.loads(post_body)
+        response = f"{create_entry(post_body)}"
         self.wfile.write(response.encode())
 
 
