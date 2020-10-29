@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from entries import get_all_entries, get_single_entry, delete_entry, get_entry_by_word, create_entry, update_entry
 from moods import get_all_moods, get_single_mood
+from tags import get_all_tags
 import json
 
 
@@ -44,6 +45,8 @@ class HandleRequests(BaseHTTPRequestHandler):
 
                 else:
                     response = f"{get_all_moods()}"
+            if resource == "tags":
+                response = f"{get_all_tags()}"
 
         elif len(parsed) == 3:
             ( resource, key, value ) = parsed
