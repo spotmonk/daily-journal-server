@@ -40,6 +40,23 @@ def get_all_entries():
 
             mood = Mood(row['moodId'], row['label'])
             entry.mood = mood.__dict__
+
+            db_cursor.execute("""
+                    SELECT
+                    t.name
+                FROM entries e
+                JOIN entry_tag et
+                on e.id = et.entry_id
+                JOIN tag t
+                on t.id = et.tag_id
+                where e.id = ?
+            """, ( row['id'], ))
+
+            tags_data = db_cursor.fetchall()
+            tags = []
+            for tagrow in tags_data:
+                tags.append(tagrow['name'])
+            entry.tags = tags
             entries.append(entry.__dict__)
 
     # Use `json` package to properly serialize list as JSON
@@ -130,10 +147,20 @@ def create_entry(new_entry):
         """, (new_entry['concept'], new_entry['entry'],
               new_entry['date'], new_entry['moodId'] ))
 
+
         # The `lastrowid` property on the cursor will return
         # the primary key of the last thing that got added to
         # the database.
         id = db_cursor.lastrowid
+
+        for tag in new_entry['tags']:
+
+            db_cursor.execute("""
+            INSERT INTO entry_tag
+            ( entry_id, tag_id )
+              VALUES
+            ( ?, ?);
+            """, (id, tag))
 
         # Add the `id` property to the entry dictionary that
         # was sent by the client so that the client sees the
